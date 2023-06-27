@@ -47,11 +47,23 @@ elif len(ports) == 1:
     port_info = ports[0]
 else:
     highest_serial = -1
+    port_options = []
     for p in ports:
         ser = int(p.serial_number, 16)
         if ser > highest_serial:
             highest_serial = ser
-            port_info = p
+            port_options = [p]
+        elif ser == highest_serial:
+            port_options.append(p)
+    if len(port_options) == 1:
+        port_info = port_options[0]
+    else:
+        highest_loc = -1.0
+        for po in port_options:
+            loc = float(po.location[-3:])
+            if loc > highest_loc:
+                highest_loc = loc
+                port_info = po
 
 port = serial.Serial(port=port_info.device, baudrate=500000, timeout=2)
 
