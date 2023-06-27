@@ -67,6 +67,7 @@ xvlog.*
 *.backup.*
 *.debug
 *.ip_user_files
+*.gen
 
 ## checkpoint files
 *.dcp
@@ -74,3 +75,5 @@ xvlog.*
 ## IP sources
 *.srcs/sources_*/ip/*/**
 !*.srcs/sources_*/ip/*/*.xci
+
+.idea

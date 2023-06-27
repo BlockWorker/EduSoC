@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="interconnect_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="interconnect_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="800.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,166.001 ns"></ZoomEndTime>
+      <Cursor1Time time="1,090.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="202"></NameColumnWidth>
+      <ValueColumnWidth column_width="97"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/interconnect_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/res" type="logic">
+      <obj_property name="ElementShortName">res</obj_property>
+      <obj_property name="ObjectShortName">res</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/\slave_gen[0].conflict_resolver /conflict" type="logic">
+      <obj_property name="ElementShortName">conflict</obj_property>
+      <obj_property name="ObjectShortName">conflict</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/\slave_gen[1].conflict_resolver /conflict" type="logic">
+      <obj_property name="ElementShortName">conflict</obj_property>
+      <obj_property name="ObjectShortName">conflict</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/\slave_gen[2].conflict_resolver /conflict" type="logic">
+      <obj_property name="ElementShortName">conflict</obj_property>
+      <obj_property name="ObjectShortName">conflict</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/\slave_gen[3].conflict_resolver /conflict" type="logic">
+      <obj_property name="ElementShortName">conflict</obj_property>
+      <obj_property name="ObjectShortName">conflict</obj_property>
+   </wvobject>
+   <wvobject fp_name="group36" type="group">
+      <obj_property name="label">master_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/interconnect_tb/master_0/addr" type="array">
+         <obj_property name="ElementShortName">addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_0/read_data" type="array">
+         <obj_property name="ElementShortName">read_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">read_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_0/req" type="logic">
+         <obj_property name="ElementShortName">req</obj_property>
+         <obj_property name="ObjectShortName">req</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_0/valid" type="logic">
+         <obj_property name="ElementShortName">valid</obj_property>
+         <obj_property name="ObjectShortName">valid</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group37" type="group">
+      <obj_property name="label">master_1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/interconnect_tb/master_1/addr" type="array">
+         <obj_property name="ElementShortName">addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_1/read_data" type="array">
+         <obj_property name="ElementShortName">read_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">read_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_1/req" type="logic">
+         <obj_property name="ElementShortName">req</obj_property>
+         <obj_property name="ObjectShortName">req</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_1/valid" type="logic">
+         <obj_property name="ElementShortName">valid</obj_property>
+         <obj_property name="ObjectShortName">valid</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group38" type="group">
+      <obj_property name="label">master_2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/interconnect_tb/master_2/addr" type="array">
+         <obj_property name="ElementShortName">addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_2/read_data" type="array">
+         <obj_property name="ElementShortName">read_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">read_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_2/req" type="logic">
+         <obj_property name="ElementShortName">req</obj_property>
+         <obj_property name="ObjectShortName">req</obj_property>
+      </wvobject>
+      <wvobject fp_name="/interconnect_tb/master_2/valid" type="logic">
+         <obj_property name="ElementShortName">valid</obj_property>
+         <obj_property name="ObjectShortName">valid</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
