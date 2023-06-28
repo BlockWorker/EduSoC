@@ -45,7 +45,7 @@ module system(
         always @(BOARD_CLK) clk = BOARD_CLK;
     `endif
     
-    edusoc soc (
+    edusoc_basic soc (
         .BOARD_CLK(clk),
         .BOARD_RESN(BOARD_RESN),
         .BOARD_LED(BOARD_LED),
