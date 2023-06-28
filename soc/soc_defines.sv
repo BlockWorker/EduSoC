@@ -21,6 +21,20 @@
 `ifndef SOC_DEFINES_HEADER //include guard
 `define SOC_DEFINES_HEADER
 
+//Memory sizes - specify the address width in bits, which is log2(memory size in bytes)
+`define MEM_BOOTROM_ADDR_WIDTH 13 //8 KB Boot ROM
+`define MEM_RAM_ADDR_WIDTH 16 //64 KB main RAM
+
+//Memory latencies in clock cycles
+`define MEM_BOOTROM_LATENCY 1 //boot ROM is fast
+`define MEM_RAM_LATENCY 7 //RAM is slow
+
+//Address space definitions
+`define ADDR_BOOTROM_START 'h1A000000
+`define ADDR_BOOTROM_END 'h1A002000
+`define ADDR_RAM_START 'h1C000000
+`define ADDR_RAM_END 'h1C010000
+
 //UART clock - by default, configured for 500 kBaud -> 8 MHz clock
 `define UART_CLK_DIVIDER_PLL 100 //divider down from 800Mhz, 1-128
 `define UART_CLK_DIVIDER_POST 1 //post-divider after above division, either 1 or a multiple of 2
