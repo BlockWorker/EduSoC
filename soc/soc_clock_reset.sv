@@ -100,15 +100,15 @@ module soc_clock_reset #(
     // End of PLLE2_BASE_inst instantiation
     
     BUFGCE buf_ref_clk (
-       .O  ( main_clk ),
-       .CE ( lock ),
-       .I  ( clk_int )
+       .O(main_clk),
+       .CE(lock),
+       .I(clk_int)
     );
     
     BUFGCE buf_uart_clk (
-       .O  ( uart_clk_undivided ),
-       .CE ( lock ),
-       .I  ( uart_clk_int )
+       .O(uart_clk_undivided),
+       .CE(lock),
+       .I(uart_clk_int)
     );
     
     if (UART_POST_DIVIDER > 1) begin //post-divider greater than one: post-division is needed

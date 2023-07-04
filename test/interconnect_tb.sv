@@ -43,11 +43,11 @@ module interconnect_tb();
     );
     
     class Request;
-        rand logic [31:0] addr;
-        rand logic [31:0] write_data;
-        rand logic write_en;
-        rand logic [3:0] byte_en;
-        rand logic [2:0] active;
+        randc bit [7:0] addr;
+        rand bit [31:0] write_data;
+        rand bit write_en;
+        rand bit [3:0] byte_en;
+        rand bit [2:0] active;
     endclass;
     
     //clock init and reset
@@ -89,14 +89,13 @@ module interconnect_tb();
         .bus(slave_2.Slave),
         .mem_data_out(32'hd2d2d2d2)
     );
-    soc_memory_controller #(
-        .ADDR_WIDTH(3),
+    soc_peripheral_controller #(
         .LATENCY(10)
     ) slave_3_con (
         .clk(clk),
         .res(res),
         .bus(slave_3.Slave),
-        .mem_data_out(32'hc3c3c3c3)
+        .data_out(32'hc3c3c3c3)
     );
     
     //automatic request cancellation upon valid for all masters
@@ -134,7 +133,7 @@ module interconnect_tb();
         if (~master_0.req) begin
             requests[0].randomize();
             if (requests[0].active == '0) begin
-                master_0.addr <= requests[0].addr;
+                master_0.addr <= {requests[0].addr, 24'b0};
                 master_0.write_data <= requests[0].write_data;
                 master_0.write_en <= requests[0].write_en;
                 master_0.byte_en <= requests[0].byte_en;
@@ -144,7 +143,7 @@ module interconnect_tb();
         if (~master_1.req) begin
             requests[1].randomize();
             if (requests[1].active == '0) begin
-                master_1.addr <= requests[1].addr;
+                master_1.addr <= {requests[1].addr, 24'b0};
                 master_1.write_data <= requests[1].write_data;
                 master_1.write_en <= requests[1].write_en;
                 master_1.byte_en <= requests[1].byte_en;
@@ -154,7 +153,7 @@ module interconnect_tb();
         if (~master_2.req) begin
             requests[2].randomize();
             if (requests[2].active == '0) begin
-                master_2.addr <= requests[2].addr;
+                master_2.addr <= {requests[2].addr, 24'b0};
                 master_2.write_data <= requests[2].write_data;
                 master_2.write_en <= requests[2].write_en;
                 master_2.byte_en <= requests[2].byte_en;

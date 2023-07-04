@@ -115,7 +115,7 @@ module soc_framebuffer #(
       .regceb                  (1'b1),
       .web                     (1'b0),
       .addrb                   (word_addr_b),
-      .dinb                    (32'b0),
+      .dinb                    (8'b0),
       .injectsbiterrb          (1'b0),
       .injectdbiterrb          (1'b0),
       .doutb                   (read_data_b),

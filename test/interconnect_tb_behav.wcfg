@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="800.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,166.001 ns"></ZoomEndTime>
-      <Cursor1Time time="1,090.000 ns"></Cursor1Time>
+      <ZoomStartTime time="5,392.400 ns"></ZoomStartTime>
+      <ZoomEndTime time="5,653.601 ns"></ZoomEndTime>
+      <Cursor1Time time="5,700.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="202"></NameColumnWidth>
-      <ValueColumnWidth column_width="97"></ValueColumnWidth>
+      <ValueColumnWidth column_width="93"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="9" />
+   <WVObjectSize size="12" />
    <wvobject fp_name="/interconnect_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -27,6 +27,18 @@
    <wvobject fp_name="/interconnect_tb/res" type="logic">
       <obj_property name="ElementShortName">res</obj_property>
       <obj_property name="ObjectShortName">res</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/slave_select" type="array">
+      <obj_property name="ElementShortName">slave_select[2:0][3:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_select[2:0][3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/slave_granted" type="array">
+      <obj_property name="ElementShortName">slave_granted[2:0][3:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_granted[2:0][3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/interconnect_tb/dut/slave_index" type="array">
+      <obj_property name="ElementShortName">slave_index[2:0][1:0]</obj_property>
+      <obj_property name="ObjectShortName">slave_index[2:0][1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/interconnect_tb/dut/\slave_gen[0].conflict_resolver /conflict" type="logic">
       <obj_property name="ElementShortName">conflict</obj_property>

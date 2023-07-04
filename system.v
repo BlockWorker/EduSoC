@@ -36,17 +36,8 @@ module system(
         output BOARD_UART_TX
     );
     
-    reg clk;
-    
-    `ifdef XILINX_SIMULATOR
-        initial clk = 0;
-        always #5 clk = ~clk;
-    `else
-        always @(BOARD_CLK) clk = BOARD_CLK;
-    `endif
-    
     edusoc_basic soc (
-        .BOARD_CLK(clk),
+        .BOARD_CLK(BOARD_CLK),
         .BOARD_RESN(BOARD_RESN),
         .BOARD_LED(BOARD_LED),
         .BOARD_LED_RGB0(BOARD_LED_RGB0),

@@ -26,7 +26,7 @@
 
 module soc_interconnect #(
         parameter SLAVE_COUNT = 1,
-        parameter integer SLAVE_START_ADDRESSES [SLAVE_COUNT-1:0] = { 0 },
+        parameter integer SLAVE_START_ADDRESSES [SLAVE_COUNT-1:0] = { '0 },
         parameter integer SLAVE_END_ADDRESSES [SLAVE_COUNT-1:0] = { 'h1000 }
     ) (
         input clk,

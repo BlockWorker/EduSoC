@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: University of Stuttgart, ITI
+// Engineer: Alexander Kharitonov
 // 
 // Create Date: 25.06.2023 17:38:00
 // Design Name: 
@@ -72,15 +72,15 @@ module edusoc_basic(
     SoC_MemBus instr_bus(), data_bus();
     SoC_InterruptBus int_bus();
     
+    //GPIO and PWM wires
+    wire [(32*`GPIO_PORT_COUNT)-1:0] gpio_in;
+    wire [(32*`GPIO_PORT_COUNT)-1:0] gpio_out;
+    wire [`PWM_MODULE_COUNT-1:0] pwm;
+    
     //actual SoC component
     edusoc soc (
         .ext_clk(BOARD_CLK),
         .ext_resn(BOARD_RESN),
-        .leds(BOARD_LED),
-        .led_rgb0(BOARD_LED_RGB0),
-        .led_rgb1(BOARD_LED_RGB1),
-        .buttons(BOARD_BUTTON),
-        .switches(BOARD_SWITCH),
         .vga_hsync(BOARD_VGA_HSYNC),
         .vga_vsync(BOARD_VGA_VSYNC),
         .vga_r(BOARD_VGA_R),
@@ -88,12 +88,25 @@ module edusoc_basic(
         .vga_b(BOARD_VGA_B),
         .uart_rx(BOARD_UART_RX),
         .uart_tx(BOARD_UART_TX),
-        .main_clk(CPU_CLK),
-        .res(CPU_RES),
+        .gpio_in(gpio_in),
+        .gpio_out(gpio_out),
+        .gpio_drive(),
+        .pwm(pwm),
+        .core_clk(CPU_CLK),
+        .core_res(CPU_RES),
+        .control_flags(),
         .instr_bus(instr_bus.Slave),
         .data_bus(data_bus.Slave),
+        .core_int_triggers(16'b0),
         .int_bus(int_bus.Generator)
     );
+    
+    //GPIO and PWM connections
+    assign BOARD_LED = gpio_out[3:0];
+    assign BOARD_LED_RGB0 = pwm[2:0] | gpio_out[10:8];
+    assign BOARD_LED_RGB1 = pwm[5:3] | gpio_out[14:12];
+    assign gpio_in[19:16] = BOARD_BUTTON;
+    assign gpio_in[23:20] = BOARD_SWITCH;
     
     //instruction bus fanout - read-only bus, so write-related signals tied to zero
     assign instr_bus.addr = INSTR_ADDR;
