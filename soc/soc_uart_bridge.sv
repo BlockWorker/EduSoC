@@ -33,6 +33,10 @@
 `define UBG_RXTYPE_DATA         `UBG_RXTYPE_BITS'd2
 `define UBG_RXTYPE_CRC          `UBG_RXTYPE_BITS'd3
 
+`define UBG_RESPONSE_SUCCESS    8'h59
+`define UBG_RESPONSE_BAD_CRC    8'h23
+`define UBG_RESPONSE_ERROR      8'he0
+
 
 module soc_uart_bridge(
         input clk,
@@ -155,9 +159,9 @@ module soc_uart_bridge(
                                 end
                                 `UBG_RXTYPE_CRC: begin //crc: compare with calculated crc, send back result
                                     if (crc == rx_buffer_next) begin //crc matches: send success byte
-                                        tx_data <= 8'h59;
+                                        tx_data <= `UBG_RESPONSE_SUCCESS;
                                     end else begin //crc doesn't match: send mismatch byte
-                                        tx_data <= 8'h23;
+                                        tx_data <= `UBG_RESPONSE_BAD_CRC;
                                     end
                                     start_tx <= 1;
                                     rx_type <= `UBG_RXTYPE_ADR; //reset to receive next address
@@ -187,7 +191,7 @@ module soc_uart_bridge(
                 end
                 `UBG_ERROR: begin //error: continuously transmit error byte
                     if (tx_empty) begin
-                        tx_data <= 8'he0;
+                        tx_data <= `UBG_RESPONSE_ERROR;
                         start_tx <= 1;
                     end
                 end

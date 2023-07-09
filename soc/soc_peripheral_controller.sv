@@ -9,7 +9,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: Controller for peripheral modules, implementing the SoC memory protocol for the given address space and latency.
+// Description: Controller for peripheral modules, implementing the SoC memory protocol for the given latency.
 // 
 // Dependencies: 
 // 

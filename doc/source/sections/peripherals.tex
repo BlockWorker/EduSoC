@@ -1,0 +1,28 @@
+% Table helpers for register bit tables
+\newcolumntype{B}{>{\centering}m{14mm}} % "Bit" column type, fixed width
+\newcommand{\ub}{\cellcolor{gray!25}\textemdash} % "Unused bit" cell
+\newcommand{\bd}[1]{\scriptsize#1\vspace{-2.3mm}} % Bit details (read/write ability, reset value, ...)
+\newcommand{\br}[1]{\multirow{2}{*}{#1\vspace{-2.3mm}}} % Bit range cell (first column)
+
+\section{Peripherals}\label{sec:peripherals}
+EduSoC contains multiple memory-mapped peripheral modules. They are accessible using the main memory bus and have registers to control their function, which are described in the following sections.
+
+All registers in the following peripherals have four separate addresses each (differentiated by the last hexadecimal digit of the address), implementing functions for easy bit manipulations:
+\begin{itemize}
+    \item \ttt{0x???????0}: Main register. Allows reading the register value and writing a value directly.
+    \item \ttt{0x???????4}: SET register. Reads as 0. When written: For every high (1) bit in the written value, the corresponding register bit is set high (1). Low (0) bits in the written value leave the corresponding register bits unchanged.
+    \item \ttt{0x???????8}: CLEAR register. Reads as 0. When written: For every high (1) bit in the written value, the corresponding register bit is cleared (set to 0). Low (0) bits in the written value leave the corresponding register bits unchanged.
+    \item \ttt{0x???????C}: INVERT register. Reads as 0. When written: For every high (1) bit in the written value, the corresponding register bit is inverted (0 $\leftrightarrow$ 1). Low (0) bits in the written value leave the corresponding register bits unchanged.
+\end{itemize}
+In the following register descriptions, only the main register address is given, but the other addresses still function as described above, by using the corresponding last address digit.
+The only exceptions are register bits which are read-only or may only be written in certain ways - the SET, CLEAR, and INVERT variants of those registers respect these restrictions, and will not perform any unsupported operations.
+
+The register addresses given in the following register descriptions assume the default memory map as described in Section \ref{sec:memorymap}.
+
+\input{sections/soccon}
+
+\input{sections/gpio}
+
+\input{sections/timer}
+
+\input{sections/pwm}

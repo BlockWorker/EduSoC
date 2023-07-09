@@ -9,7 +9,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: Clock and Reset generator. Provides active-high reset, 25 MHz reference clock, and configurable UART clock.
+// Description: Clock and Reset generator. Provides active-high reset, main clock, VGA clock, and configurable UART clock.
 //              Requires 100 MHz input clock and optional external reset (active-low).
 // 
 // Dependencies: 
@@ -22,12 +22,15 @@
 
 
 module soc_clock_reset #(
+        parameter MAIN_PLL_DIVIDER = 16, //Main clock PLL divider (down from 800MHz)
+        parameter VGA_PLL_DIVIDER = 32, //VGA clock PLL divider (down from 800MHz)
         parameter UART_PLL_DIVIDER = 31, //UART PLL divider (down from 800MHz) - 31 yields 224x baudrate clock for 115200 baud UART
         parameter UART_POST_DIVIDER = 14 //UART post-divider (multiple of 2, or = 1) - 14 with 224x baudrate above yields 16x baudrate clock for 115200 baud UART (almost no baud rate error)
     ) (
         input in_clk,
         output main_clk,
         output reg uart_clk,
+        output vga_clk,
         
         input in_rst_n,
         output out_rst
@@ -42,10 +45,9 @@ module soc_clock_reset #(
         end
     end
     
-    wire clk2, clk3, clk4, clk5, clk_fb, lock, clk_int, uart_clk_int, uart_clk_undivided;
+    wire clk3, clk4, clk5, clk_fb, lock, main_clk_int, uart_clk_int, uart_clk_undivided, vga_clk_int;
     
     // PLLE2_BASE: Base Phase Locked Loop (PLL)
-    //             Artix-7
     // Xilinx HDL Language Template, version 2017.4
     
     PLLE2_BASE #(
@@ -54,9 +56,9 @@ module soc_clock_reset #(
       .CLKFBOUT_PHASE(0.0),     // Phase offset in degrees of CLKFB, (-360.000-360.000).
       .CLKIN1_PERIOD(10.0),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
       // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for each CLKOUT (1-128)
-      .CLKOUT0_DIVIDE(32),
+      .CLKOUT0_DIVIDE(MAIN_PLL_DIVIDER),
       .CLKOUT1_DIVIDE(UART_PLL_DIVIDER),
-      .CLKOUT2_DIVIDE(1),
+      .CLKOUT2_DIVIDE(VGA_PLL_DIVIDER),
       .CLKOUT3_DIVIDE(1),
       .CLKOUT4_DIVIDE(1),
       .CLKOUT5_DIVIDE(1),
@@ -80,9 +82,9 @@ module soc_clock_reset #(
     )
     PLLE2_BASE_inst (
       // Clock Outputs: 1-bit (each) output: User configurable clock outputs
-      .CLKOUT0(clk_int),   // 1-bit output: CLKOUT0
+      .CLKOUT0(main_clk_int),   // 1-bit output: CLKOUT0
       .CLKOUT1(uart_clk_int),   // 1-bit output: CLKOUT1
-      .CLKOUT2(clk2),   // 1-bit output: CLKOUT2
+      .CLKOUT2(vga_clk_int),   // 1-bit output: CLKOUT2
       .CLKOUT3(clk3),   // 1-bit output: CLKOUT3
       .CLKOUT4(clk4),   // 1-bit output: CLKOUT4
       .CLKOUT5(clk5),   // 1-bit output: CLKOUT5
@@ -99,16 +101,22 @@ module soc_clock_reset #(
     
     // End of PLLE2_BASE_inst instantiation
     
-    BUFGCE buf_ref_clk (
+    BUFGCE buf_main_clk (
        .O(main_clk),
        .CE(lock),
-       .I(clk_int)
+       .I(main_clk_int)
     );
     
     BUFGCE buf_uart_clk (
        .O(uart_clk_undivided),
        .CE(lock),
        .I(uart_clk_int)
+    );
+    
+    BUFGCE buf_vga_clk (
+       .O(vga_clk),
+       .CE(lock),
+       .I(vga_clk_int)
     );
     
     if (UART_POST_DIVIDER > 1) begin //post-divider greater than one: post-division is needed

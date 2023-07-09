@@ -66,19 +66,27 @@
 
 
 
-//**************************** UART ****************************
+//**************************** CLOCK ****************************
+//Main clock - by default, configured for 25 MHz
+`define CLK_MAIN_DIVIDER        32
+//VGA clock - by default, configured for 25 MHz (requirement for 640x480 display)
+`define CLK_VGA_DIVIDER         32
 //UART clock - by default, configured for 500 kBaud -> 8 MHz clock
-`define UART_CLK_DIVIDER_PLL    100 //divider down from 800Mhz, 1-128
-`define UART_CLK_DIVIDER_POST   1 //post-divider after above division, either 1 or a multiple of 2
+`define CLK_UART_DIVIDER_PLL    100 //divider down from 800Mhz, 1-128
+`define CLK_UART_DIVIDER_POST   1 //post-divider after above division, either 1 or a multiple of 2
 
 
 
 //**************************** VIDEO ****************************
-//Video framebuffer size in bits - see a few options below. Changes to display size / bit width also need changes in 'vga_digilent.vhd'.
-//640px*480px*6bit/px=1843200 (4:3)
+//Video framebuffer size in bits - see a few options below.
 //640px*300px*8bit/px=1536000 (32:15)
 //640px*360px*8bit/px=1843200 (16:9)
 `define VIDEO_FB_MEM_SIZE 1843200
+
+//VGA output properties
+`define VIDEO_VGA_OFFSET 60 //vertical offset of image in 640x480 frame (640x480: 0, 640x360: 60, 640x300: 90)
+`define VIDEO_VGA_FIRST_LINE 95 //first line index that is active (640x480: 35, 640x360: 95, 640x300: 125)
+`define VIDEO_VGA_LAST_LINE 455 //first line index that is active (640x480: 515, 640x360: 455, 640x300: 425)
 
 
 

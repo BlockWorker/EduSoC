@@ -26,7 +26,8 @@ module soc_framebuffer #(
         parameter ADDR_WIDTH_B = 32,
         parameter MEM_SIZE = 1536000
     ) (
-        input clk,
+        input main_clk,
+        input vga_clk,
         input res,
         
         SoC_MemBus.Slave bus_a,
@@ -45,7 +46,7 @@ module soc_framebuffer #(
         .ADDR_WIDTH(ADDR_WIDTH_A),
         .LATENCY(LATENCY_A)
     ) a_controller (
-        .clk(clk),
+        .clk(main_clk),
         .res(res),
         .bus(bus_a),
         .mem_data_out(data_out_a),
@@ -60,7 +61,7 @@ module soc_framebuffer #(
       // Common module parameters
       .MEMORY_SIZE             (MEM_SIZE),        //positive integer
       .MEMORY_PRIMITIVE        ("block"),         //string; "auto", "distributed", "block" or "ultra";
-      .CLOCKING_MODE           ("common_clock"),  //string; "common_clock", "independent_clock" 
+      .CLOCKING_MODE           ("independent_clock"),//string; "common_clock", "independent_clock" 
       .MEMORY_INIT_FILE        ("none"),          //string; "none" or "<filename>.mem" 
       .MEMORY_INIT_PARAM       (""),              //string;
       .USE_MEM_INIT            (0),               //integer; 0,1
@@ -95,7 +96,7 @@ module soc_framebuffer #(
       .sleep                   (1'b0),
     
       // Port A module ports
-      .clka                    (clk),
+      .clka                    (main_clk),
       .rsta                    (res),
       .ena                     (1'b1),
       .regcea                  (1'b1),
@@ -109,7 +110,7 @@ module soc_framebuffer #(
       .dbiterra                (),
     
       // Port B module ports
-      .clkb                    (1'b0),
+      .clkb                    (vga_clk),
       .rstb                    (res),
       .enb                     (1'b1),
       .regceb                  (1'b1),

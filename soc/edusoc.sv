@@ -54,7 +54,7 @@ module edusoc(
     );
     
     reg _ext_clk, _ext_resn;
-    wire main_clk, uart_clk;
+    wire main_clk, uart_clk, vga_clk;
     wire raw_res, soc_res;
     wire core_halt;
     
@@ -76,12 +76,15 @@ module edusoc(
     
     //Clock+reset generator
     soc_clock_reset #(
-        .UART_PLL_DIVIDER(`UART_CLK_DIVIDER_PLL),
-        .UART_POST_DIVIDER(`UART_CLK_DIVIDER_POST)
+        .MAIN_PLL_DIVIDER(`CLK_MAIN_DIVIDER),
+        .VGA_PLL_DIVIDER(`CLK_VGA_DIVIDER),
+        .UART_PLL_DIVIDER(`CLK_UART_DIVIDER_PLL),
+        .UART_POST_DIVIDER(`CLK_UART_DIVIDER_POST)
     ) clk_rst_gen (
         .in_clk(_ext_clk),
         .main_clk(main_clk),
         .uart_clk(uart_clk),
+        .vga_clk(vga_clk),
         .in_rst_n(_ext_resn),
         .out_rst(raw_res)
     );
@@ -147,9 +150,13 @@ module edusoc(
     soc_video_controller #(
         .FB_ADDR_WIDTH(`MEM_FRAMEBUFFER_ADDR_WIDTH),
         .FB_LATENCY(`MEM_FRAMEBUFFER_LATENCY),
-        .FB_MEM_SIZE(`VIDEO_FB_MEM_SIZE)
+        .FB_MEM_SIZE(`VIDEO_FB_MEM_SIZE),
+        .VGA_OFFSET(`VIDEO_VGA_OFFSET),
+        .VGA_FIRST_LINE(`VIDEO_VGA_FIRST_LINE),
+        .VGA_LAST_LINE(`VIDEO_VGA_LAST_LINE)
     ) vid (
-        .clk(main_clk),
+        .main_clk(main_clk),
+        .vga_clk(vga_clk),
         .res(soc_res),
         .vga_hsync(vga_hsync),
         .vga_vsync(vga_vsync),

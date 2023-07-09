@@ -1,0 +1,49 @@
+\documentclass[12pt]{scrartcl}
+
+\input{Packages.tex}
+
+\ihead{University of Stuttgart, ITI}
+%\chead{\today}
+\ohead{EduSoC v1.0}
+
+\title{EduSoC v1.0 Documentation}
+\subtitle{Minimalistic RISC-V-oriented SoC for educational purposes}
+\author{Alexander Kharitonov\\University of Stuttgart, ITI}
+
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\angles}[1]{\left\langle#1\right\rangle}
+\newcommand{\squares}[1]{\left[#1\right]}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{.7em}
+\setlength{\intextsep}{0em}
+
+
+\begin{document}
+
+\input{sections/general}
+
+\input{sections/interfaces}
+
+\input{sections/modules}
+
+\input{sections/peripherals}
+
+
+\section{Configuration}\label{sec:config}
+
+
+\appendix
+\section{\ttt{edusoc\_basic}: Verilog-Compatible Interface for Arty S7}\label{sec:basic}
+
+
+\section{Revision History}\label{sec:revisions}
+
+
+
+\end{document}
