@@ -44,7 +44,7 @@
 //Memory latencies in clock cycles (+1 inherent latency)
 `define MEM_BOOTROM_LATENCY     1
 `define MEM_RAM_LATENCY         7
-`define MEM_PERIPHERAL_LATENCY  1
+`define MEM_PERIPHERAL_LATENCY  0
 `define MEM_FRAMEBUFFER_LATENCY 3
 
 //Address space definitions

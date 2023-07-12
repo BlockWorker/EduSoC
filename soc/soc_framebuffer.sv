@@ -78,7 +78,7 @@ module soc_framebuffer #(
       .BYTE_WRITE_WIDTH_A      (8),               //integer; 8, 9, or WRITE_DATA_WIDTH_A value
       .ADDR_WIDTH_A            (WORD_ADDR_WIDTH_A),//positive integer
       .READ_RESET_VALUE_A      ("0"),             //string
-      .READ_LATENCY_A          (LATENCY_A),       //non-negative integer
+      .READ_LATENCY_A          (LATENCY_A + 1),   //non-negative integer
       .WRITE_MODE_A            ("read_first"),    //string; "write_first", "read_first", "no_change" 
     
       // Port B module parameters
