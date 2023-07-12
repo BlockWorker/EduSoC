@@ -1,0 +1,59 @@
+\appendix
+\newpage
+\section{\ttt{edusoc\_basic}: Verilog-Compatible Interface for Arty S7}\label{sec:basic}
+For simple applications on the Arty S7 board with the default SoC configuration, the \ttt{edusoc\_basic} module is provided. It is fully compatible with Verilog interfaces (as opposed to the SystemVerilog requirement for the generic \ttt{edusoc} module) and provides simple connections designed for the Arty S7 board:\\
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c||c|c|c|}\hline
+        Name & Width (bits) & Direction & Name & Width (bits) & Direction \\\hline\hline
+        \ttt{BOARD\_CLK} & 1 & SoC input & \ttt{INSTR\_REQ} & 1 & SoC input \\
+        \ttt{BOARD\_RESN} & 1 & SoC input & \ttt{INSTR\_VALID} & 1 & SoC output \\
+        \ttt{BOARD\_LED} & 4 & SoC output & \ttt{INSTR\_ADDR} & 32 & SoC input \\
+        \ttt{BOARD\_LED\_RGB0} & 3 & SoC output & \ttt{INSTR\_RDATA} & 32 & SoC output \\
+        \ttt{BOARD\_LED\_RGB1} & 3 & SoC output & \ttt{DATA\_REQ} & 1 & SoC input \\
+        \ttt{BOARD\_BUTTON} & 4 & SoC input & \ttt{DATA\_VALID} & 1 & SoC output \\
+        \ttt{BOARD\_SWITCH} & 4 & SoC input & \ttt{DATA\_WE} & 1 & SoC input \\
+        \ttt{BOARD\_VGA\_HSYNC} & 1 & SoC output & \ttt{DATA\_BE} & 4 & SoC input \\
+        \ttt{BOARD\_VGA\_VSYNC} & 1 & SoC output & \ttt{DATA\_ADDR} & 32 & SoC input \\
+        \ttt{BOARD\_VGA\_R} & 4 & SoC output & \ttt{DATA\_WDATA} & 32 & SoC input \\
+        \ttt{BOARD\_VGA\_G} & 4 & SoC output & \ttt{DATA\_RDATA} & 32 & SoC output \\
+        \ttt{BOARD\_VGA\_B} & 4 & SoC output & \ttt{IRQ} & 1 & SoC output \\
+        \ttt{BOARD\_UART\_RX} & 1 & SoC input & \ttt{IRQ\_ID} & 5 & SoC output \\
+        \ttt{BOARD\_UART\_TX} & 1 & SoC output & \ttt{IRQ\_ACK} & 1 & SoC input \\
+        \ttt{CPU\_CLK} & 1 & SoC output & \ttt{IRQ\_ACK\_ID} & 5 & SoC input \\
+        \ttt{CPU\_RES} & 1 & SoC output &  &  &  \\\hline
+    \end{tabular}
+    \caption{\ttt{edusoc\_basic} Interface Signals}
+    \label{tab:basic_signals}
+\end{table}
+The majority of these signals are direct equivalents to generic EduSoC interface connections (see Section \ref{sec:socinterface}), or fanouts of the buses contained therein:
+\begin{itemize}
+    \item \ttt{BOARD\_CLK} and \ttt{BOARD\_RESN} correspond to \ttt{ext\_clk} and \ttt{ext\_resn}, respectively.
+    \item \ttt{BOARD\_VGA\_*} and \ttt{BOARD\_UART\_*} correspond to \ttt{vga\_*} and \ttt{uart\_*}, respectively.
+    \item \ttt{CPU\_CLK} and \ttt{CPU\_RES} correspond to \ttt{core\_clk} and \ttt{core\_res}, respectively.
+    \item \ttt{INSTR\_*} correspond to the individual signals of \ttt{instr\_bus}. As the instruction bus is intended to be a read-only bus, only the corresponding signals are available. Write-related signals are tied to constant 0.
+    \item \ttt{DATA\_*} correspond to the individual signals of \ttt{data\_bus}.
+    \item \ttt{IRQ*} correspond to the individual signals of \ttt{int\_bus}.
+    \item Other signals from the SoC interface are not available in this basic interface (\ttt{control\_flags}, \ttt{core\_int\_triggers}, \ttt{gpio\_*} and \ttt{pwm} aside from exceptions below). If they are needed, please use the generic \ttt{edusoc} module instead.
+\end{itemize}
+\newpage
+The remaining signals of \ttt{edusoc\_basic} are intended to be mapped to the corresponding devices available on the Arty S7 board (LEDs, RGB LEDs, buttons, switches). They are internally connected to the GPIO and/or PWM ports:
+\begin{itemize}
+    \item \ttt{BOARD\_LED}[3:0] = GPIO pins 3 to 0 (output only)
+    \item \ttt{BOARD\_LED\_RGB0}[2:0] = GPIO pins 10 to 8 (output only) $\vee$ PWM signals 2 to 0 (bitwise logical OR)
+    \item \ttt{BOARD\_LED\_RGB1}[2:0] = GPIO pins 14 to 12 (output only) $\vee$ PWM signals 5 to 3 (bitwise logical OR)
+    \item \ttt{BOARD\_BUTTON}[3:0] = GPIO pins 19 to 16 (input only)
+    \item \ttt{BOARD\_SWITCH}[3:0] = GPIO pins 23 to 20 (input only)
+\end{itemize}
+
+A simple RISC-V bootloader is provided as well (\ttt{bootloader.mem}).
+
+In a system with a functional RISC-V core, it configures the GPIO registers according to the above assignments, enabling change notifications for the buttons and switches (though the GPIO interrupt remains disabled), and either jumps to RAM at address \ttt{0x1C000080} if control flag 0 is set (see Section \ref{sec:per_control}), or displays an idle counting animation on the board LEDs otherwise.
+
+This allows a UART programming script to write a new program to RAM, set control flag 0 and reset the system to let the bootloader launch the newly loaded program.
+
+\newpage
+\section{Revision History}\label{sec:revisions}
+\begin{itemize}
+    \item v1.0: Initial Version.
+\end{itemize}

@@ -1,3 +1,4 @@
+\newpage
 \section{Interrupts}\label{sec:interrupts}
 EduSoC contains a simple interrupt controller to notify the core of asynchronous events. It supports up to 32 distinct interrupts, designated by interrupt IDs (0-31).
 
@@ -68,11 +69,28 @@ In case of a CRC mismatch, data corruption during the transmission is possible. 
 
 The EduSoC repository includes a Python script (\ttt{uart-programming/uart\_upload.py}) implementing this UART interface for the Digilent Arty S7 board. See the header comment in the script itself for more information.
 
+\newpage
 \section{VGA Controller}\label{sec:vga}
 EduSoC features a VGA video interface, requiring only an external DAC module for the analog color signals, for example the Digilent PmodVGA.
-By default, it is configured for a 640x480 video output at 60 Hz refresh rate, where only the central 640x360 area is backed by actual pixel data.
+By default, it is configured for a 640x480 video output at 60 Hz refresh rate, where only the central 640x360 area is backed by actual pixel data. This can be configured, see Section \ref{sec:config}.\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\textwidth]{graphics/EduSoC VGA Layout.pdf}
+    \vspace{-1em}
+    \caption{VGA Default Screen Layout}
+    \label{fig:vga_layout}
+\end{figure}
 
-The VGA controller is connected to the framebuffer memory, reading one byte (8 bits) of framebuffer data for each pixel, in typical scanline order, and generating all VGA interface signals from this data and its given pixel clock.
-The pixel data format is RGB-332, so for each byte (= pixel), the upper three bits are the red intensity, the next three bits are the green intensity, and the lowest two bits are the blue intensity.
+The VGA controller is connected to the framebuffer memory, reading one byte (8 bits) of framebuffer data for each pixel in typical scanline order and generating all VGA interface signals from this data and its given pixel clock.
+The pixel data format is RGB-332, so for each byte (= pixel), the upper three bits are the red intensity, the next three bits are the green intensity, and the lowest two bits are the blue intensity:\\
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\hline
+        Meaning & \multicolumn{3}{c|}{\cellcolor{red!25}R[2:0]} & \multicolumn{3}{c|}{\cellcolor{green!25}G[2:0]} & \multicolumn{2}{c|}{\cellcolor{blue!25}B[1:0]} \\\hline
+    \end{tabular}
+    \caption{VGA Pixel Color Format}
+    \label{tab:vga_format}
+\end{table}
 
 The framebuffer can be read and written to using the memory bus, like any other memory section, and changes to it will be visible on a connected screen immediately as soon as the changed pixels are drawn in the next frame. Note that, like any other EduSoC memory, the framebuffer contents are not affected by a system reset.

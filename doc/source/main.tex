@@ -6,7 +6,7 @@
 %\chead{\today}
 \ohead{EduSoC v1.0}
 
-\title{EduSoC v1.0 Documentation}
+\title{EduSoC v1.0}
 \subtitle{Minimalistic RISC-V-oriented SoC for educational purposes}
 \author{Alexander Kharitonov\\University of Stuttgart, ITI}
 
@@ -23,6 +23,14 @@
 \setlength{\parskip}{.7em}
 \setlength{\intextsep}{0em}
 
+\newcommand{\largepage}{\enlargethispage{\baselineskip}}
+\newcommand{\smallpage}{\enlargethispage{-\baselineskip}}
+
+% Table helpers for register bit tables
+\newcolumntype{B}{>{\centering}m{14mm}} % "Bit" column type, fixed width
+\newcommand{\ub}{\cellcolor{gray!25}\textemdash} % "Unused bit" cell
+\newcommand{\bd}[1]{\scriptsize#1\vspace{-2.3mm}} % Bit details (read/write ability, reset value, ...)
+\newcommand{\br}[1]{\multirow{2}{*}{#1\vspace{-2.3mm}}} % Bit range cell (first column)
 
 \begin{document}
 
@@ -34,16 +42,9 @@
 
 \input{sections/peripherals}
 
+\input{sections/config}
 
-\section{Configuration}\label{sec:config}
-
-
-\appendix
-\section{\ttt{edusoc\_basic}: Verilog-Compatible Interface for Arty S7}\label{sec:basic}
-
-
-\section{Revision History}\label{sec:revisions}
-
+\input{sections/appendix}
 
 
 \end{document}

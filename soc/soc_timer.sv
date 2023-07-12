@@ -112,7 +112,7 @@ module soc_timer #(
             for (int i = 0; i < TIMER_COUNT; i++) begin
                 if (controls[i][8] || ~controls[i][0]) begin //restart timer, or timer disabled
                     counts[i] <= 32'b0;
-                end else if (next_counts[i] >= periods[i]) begin //timer period reached
+                end else if (next_counts[i] == periods[i]) begin //timer period reached
                     counts[i] <= 32'b0;
                     if (controls[i][1]) begin //disable timer if oneshot mode is enabled
                         controls[i][0] <= 0;
@@ -124,6 +124,8 @@ module soc_timer #(
                 end else begin //timer enabled but period not reached yet: just increment
                     counts[i] <= next_counts[i];
                 end
+                
+                controls[i][8] <= 0; //clear timer reset (to allow it to keep running after being reset)
             end
         
             if (write_enabled) begin

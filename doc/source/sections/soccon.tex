@@ -1,10 +1,11 @@
+\newpage
 \subsection{SoC Control}\label{sec:per_control}
 The SoC control peripheral implements functions for controlling the SoC and system as a whole, as well as controlling system interrupts.
 
 It allows software- or UART-initiated resets of the core and SoC, allows the core to be halted, and allows detailed control over interrupts (enabling/disabling interrupts globally, enabling/disabling individual interrupts, reading interrupt status, clearing individual interrupts).
 
 Additionally, a 16 bit core control flag signal is provided (see \ttt{control\_flags} in Section \ref{sec:socinterface}). These flags may have a user-defined meaning and can also be read or written using the memory bus. Unlike most registers, these flags are \textit{not} affected by system resets, retaining their state.\\
-For the bootloader code and UART programming utilities provided with EduSoC, only one of these flags (flag 0) has a meaning by default - it serves as an indicator that a program has been loaded into RAM.
+For the bootloader code and UART programming utilities provided with EduSoC, only one of these flags (flag 0) has a meaning by default - it serves as an indicator that a program has been loaded into RAM. See Appendix \ref{sec:basic} for more information.
 
 This peripheral has the following registers:\\
 \begin{table}[H]
@@ -21,8 +22,9 @@ This peripheral has the following registers:\\
 \footnotetext[1]{Upper 16 bits are initially 0x0000, but retain their values during further resets.}
 
 \subsubsection{\ttt{SOCCON\_CONTROL} Register}
-Address: \ttt{0x1B000000}\\
-Reset value: \ttt{0x00000008}\footnotemark[1]\\
+\vspace{-3mm}
+Address: \ttt{0x1B000000}\hfill
+Reset value: \ttt{0x00000008}\footnotemark[1]\\[-1mm]
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.1}
@@ -44,6 +46,7 @@ Reset value: \ttt{0x00000008}\footnotemark[1]\\
     \renewcommand{\arraystretch}{1}
     \renewcommand{\extrarowheight}{0mm}
 \end{table}
+\vspace{-2mm}
 \begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
     \item[\footnotesize Bit 31-16] \ttt{control\_flags}: Core control flags, see description above. Reset retains values.
     \item[\footnotesize Bit 15-4] Unimplemented: Read as 0.
@@ -62,8 +65,9 @@ Reset value: \ttt{0x00000008}\footnotemark[1]\\
 \end{itemize}
 
 \subsubsection{\ttt{SOCCON\_INT\_EN} Register}
-Address: \ttt{0x1B000010}\\
-Reset value: \ttt{0x00000000}\\
+\vspace{-3mm}
+Address: \ttt{0x1B000010}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.1}
@@ -85,6 +89,7 @@ Reset value: \ttt{0x00000000}\\
     \renewcommand{\arraystretch}{1}
     \renewcommand{\extrarowheight}{0mm}
 \end{table}
+\vspace{-2mm}
 \begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
     \item[\footnotesize Bit 31-0] \ttt{INT\_ENABLE}: Individual interrupt enable.\\{\footnotesize
     0 = Interrupt with the corresponding index will not be asserted to the core.\\
@@ -92,12 +97,13 @@ Reset value: \ttt{0x00000000}\\
 \end{itemize}
 Each bit corresponds to one interrupt ID, e.\,g. bit 0 corresponds to interrupt ID 0.
 
-When enabling an interrupt, if it has occurred in the past (i.\,e. its flag is 1, see \ttt{SOCCON\_INT\_FLAGS}), it will immediately be asserted to the core.
+When enabling an interrupt, if it has occurred in the past (i.\,e. its flag is 1, see \ttt{SOCCON\_INT\_FLAGS}), it will immediately be asserted to the core (assuming \ttt{INTGEN} = 1 in \ttt{SOCCON\_CONTROL}).
 
 \newpage
 \subsubsection{\ttt{SOCCON\_INT\_FLAGS} Register}
-Address: \ttt{0x1B000020}\\
-Reset value: \ttt{0x00000000}\\
+\vspace{-3mm}
+Address: \ttt{0x1B000020}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.1}
@@ -119,6 +125,7 @@ Reset value: \ttt{0x00000000}\\
     \renewcommand{\arraystretch}{1}
     \renewcommand{\extrarowheight}{0mm}
 \end{table}
+\vspace{-2mm}
 \begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
     \item[\footnotesize Bit 31-0] \ttt{INT\_FLAGS}: Interrupt occurred flags.\\{\footnotesize
     0 = Interrupt with the corresponding index has not occurred.\\

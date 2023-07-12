@@ -94,7 +94,7 @@ module soc_interconnect #(
             wire master_grant_any = |grant; //whether any master is granted slave i
             
             for (j = 0; j < 3; j = j + 1) begin
-                assign slave_select[j][i] = (master_buses[j].addr >= SLAVE_START_ADDRESSES[i] && master_buses[j].addr < SLAVE_END_ADDRESSES[i]);
+                assign slave_select[j][i] = (master_buses[j].addr >= SLAVE_START_ADDRESSES[i] && master_buses[j].addr <= SLAVE_END_ADDRESSES[i]);
                 assign requests[j] = master_buses[j].req && slave_select[j][i];
                 
                 assign slave_granted[j][i] = grant[j];

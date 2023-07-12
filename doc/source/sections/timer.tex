@@ -1,1 +1,167 @@
+\newpage
 \subsection{Timer}\label{sec:per_timer}
+The timer peripheral implements configurable timed event functionality. It consists of up to 16 independent timer modules (configurable, see Section \ref{sec:config}), where the default timer count is 2.
+
+Each timer module has a period register determining the tick period in clock cycles (by default, one clock cycle = 40ns, see also Section \ref{sec:config}), as well as a counter register that contains the current timer cycle count (within its current period). It can be configured to run in continuous or one-shot mode, and to optionally generate an interrupt on every tick / counter rollover.
+
+In the following register descriptions, each type of register is only described once, even if it has multiple copies for the different timer modules. $i$ is used as a placeholder for the timer index in these cases (where the first timer is $i = 0$). In register addresses, $i$ should be replaced with the hexadecimal representation of the desired timer index.
+
+This peripheral has the following registers:\\
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|l|}\hline
+        Address & Name & Reset Value \\\hline\hline
+        \ttt{0x1B002$i$00} & \ttt{TIMER\_CONTROL\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B002$i$10} & \ttt{TIMER\_COUNT\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B002$i$20} & \ttt{TIMER\_PERIOD\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B0020F0} & \ttt{TIMER\_INT\_STATUS} & \ttt{0x00000000} \\\hline
+    \end{tabular}
+    \caption{Timer Registers}
+    \label{tab:timer_regs}
+\end{table}
+
+\subsubsection{\ttt{TIMER\_CONTROL\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B002$i$00}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{23:16} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{15:8} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ttt{TMRRES} \\\hline
+        \br{7:0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ttt{INT\_EN} & \ttt{ONESHOT} & \ttt{ENABLE} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-9] Unimplemented: Read as 0.
+    \item[\footnotesize Bit 8] \ttt{TMRRES}: Timer counter reset.\\{\footnotesize
+    0 = No effect.\\
+    1 = Timer $i$ will have its counter (\ttt{COUNT\_$i$}) reset to 0 on the next clock cycle, and this bit will be cleared (0). This does not count as a tick / counter rollover.}
+    \item[\footnotesize Bit 7-3] Unimplemented: Read as 0.
+    \item[\footnotesize Bit 2] \ttt{INT\_EN}: Timer interrupt enable.\\{\footnotesize
+    0 = Timer $i$ will not generate any interrupts.\\
+    1 = Timer $i$ will generate an interrupt on each tick / counter rollover.}
+    \item[\footnotesize Bit 1] \ttt{ONESHOT}: Timer oneshot mode.\\{\footnotesize
+    0 = Timer $i$ will run continuously while \ttt{ENABLE} = 1 until it is disabled manually.\\
+    1 = Timer $i$ will run until the next tick / counter rollover if \ttt{ENABLE} = 1, at which point \ttt{ENABLE} will be cleared (0) automatically.}
+    \item[\footnotesize Bit 0] \ttt{ENABLE}: Timer enable.\\{\footnotesize
+    0 = Timer $i$ is stopped, its counter will not increment.\\
+    1 = Timer $i$ is running, its counter will increment and roll over when it reaches the configured period.}
+\end{itemize}
+
+\subsubsection{\ttt{TIMER\_COUNT\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B002$i$10}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{COUNT\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{COUNT\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{COUNT\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{COUNT\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{COUNT\_$i$}: Timer $i$ counter value.
+\end{itemize}
+Contains the number of clock cycles that have passed in the current period of timer $i$. The value in this register should always be less than the timer's period (note the special case for \ttt{PERIOD} = 0, see below).
+
+This register is read-only, attempting to write to it will have no effect.
+
+\newpage
+\subsubsection{\ttt{TIMER\_PERIOD\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B002$i$20}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PERIOD\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PERIOD\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PERIOD\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PERIOD\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{PERIOD\_$i$}: Timer $i$ period.\\{\footnotesize
+    \ttt{0x00000000} = 4,294,967,296 clock cycles\\
+    \ttt{0x00000001} = 1 clock cycle\\
+    \ttt{0x00000002} = 2 clock cycles\\
+    \ldots\\
+    \ttt{0xFFFFFFFF} = 4,294,967,295 clock cycles}
+\end{itemize}
+Writing to this register resets the timer's counter (\ttt{COUNT\_$i$}) to 0 without a tick / counter rollover.
+
+\subsubsection{\ttt{TIMER\_INT\_STATUS} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B0020F0}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{23:16} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{15:8} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{INT\_STATUS}[15:8]} \\\hline
+        \br{7:0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{INT\_STATUS}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\footnotesize C = Clearable} & \multicolumn{2}{l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{1}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{2}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 15-0] \ttt{INT\_STATUS}: Timer interrupt status.\\{\footnotesize
+    0 = Timer with corresponding index has not generated a tick / counter rollover interrupt.\\
+    1 = Timer with corresponding index has generated a tick / counter rollover interrupt.}
+\end{itemize}
+Bits in this register may be cleared (set to 0) using memory writes. Attempting to set bits to 1 using memory writes will have no effect.

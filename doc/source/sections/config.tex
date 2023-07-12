@@ -1,0 +1,46 @@
+\newpage
+\section{Configuration}\label{sec:config}
+Many of EduSoC's implementation details described above are configurable for individual use cases of EduSoC. The main configuration file for this purpose is \ttt{soc/soc\_defines.sv}.
+
+This section serves as an overview of the available configuration options and their meaning.
+
+\paragraph{Memory and Bus Configuration}
+Here, the SoC memories, bus behaviour, and memory map are configured.
+\begin{itemize}
+    \item \ttt{MEM\_BOOTROM\_ADDR\_WIDTH}: Address width, in bits, of the Boot ROM. This also determines the Boot ROM size - for address width $m$, the Boot ROM size will be $2^m$ bytes.
+    \item \ttt{MEM\_RAM\_ADDR\_WIDTH}: Address width, in bits, of the RAM. This also determines the RAM size - for address width $m$, the RAM size will be $2^m$ bytes.
+    \item \ttt{MEM\_FRAMEBUFFER\_ADDR\_WIDTH}: Address width, in bits, of the VGA framebuffer. This \textit{does not} determine the framebuffer size - that is defined in the VGA configuration section (see below). This width needs to be large enough to make the entire framebuffer addressable.
+    \item \ttt{MEM\_*\_INIT}: Memory initialization files. Separately configurable for simulation and synthesis.
+    \item \ttt{MEM\_*\_LATENCY}: Latency for the validation of memory bus requests to the corresponding bus slave category, in clock cycles. Actual latency will be one cycle longer than this value.
+    \item \ttt{ADDR\_SLAVE\_COUNT}: Number of memory bus slaves connected to the interconnect. Note that adding or removing slaves requires further changes in the SoC code.
+    \item \ttt{ADDR\_*\_START}: Start address of the given memory bus slave's memory space, inclusive.
+    \item \ttt{ADDR\_*\_END}: End address of the given memory bus slave's memory space, inclusive.
+\end{itemize}
+
+\paragraph{Clock Configuration}
+Here, the frequencies for the different SoC clocks are configured.
+\begin{itemize}
+    \item \ttt{CLK\_MAIN\_DIVIDER}: Divider for the generation of the main system (SoC and core) clock. For a divider value $n$, the resulting frequency is $\frac{800 \text{ MHz}}{n}$. Value must be between 1 and 128, inclusive. Default: 32 (25 MHz clock).
+    \item \ttt{CLK\_VGA\_DIVIDER}: Divider for the generation of the VGA pixel clock (must correspond to the implemented VGA resolution). For a divider value $n$, the resulting frequency is $\frac{800 \text{ MHz}}{n}$. Value must be between 1 and 128, inclusive. Default: 32 (25 MHz clock).
+    \item \ttt{CLK\_UART\_DIVIDER\_PLL}: Main divider for the generation of the UART clock (see below). Value must be between 1 and 128, inclusive. Default: 100 (8 MHz clock).
+    \item \ttt{CLK\_UART\_DIVIDER\_POST}: Post-divider for the generation of the UART clock (see below). Value must be either 1 or a positive multiple of 2. Default: 1 (8 MHz clock).
+\end{itemize}
+For the UART clock, given a PLL divider $n$ and a post-divider $m$, the resulting frequency is $\frac{800 \text{ MHz}}{n \cdot m}$.\\
+The corresponding UART data rate is $\frac{1}{16}$ of the UART clock frequency, i.\,e. $\frac{50,000,000}{n \cdot m}$ Baud.
+
+\paragraph{Video Configuration}
+Here, various Video/VGA parameters are configured.
+\begin{itemize}
+    \item \ttt{VIDEO\_FB\_MEM\_SIZE}: Framebuffer size, in \textit{bits}. Should be sized accordingly to the chosen active screen area size/resolution. Remember to ensure a sufficient framebuffer address width (see above).
+    \item \ttt{VIDEO\_VGA\_OFFSET}: Vertical offset (in lines/pixels) of the active display area from the top of the overall VGA frame.
+    \item \ttt{VIDEO\_VGA\_*\_LINE}: VGA line timings for the start and end of the active display area. See examples in the configuration file.
+\end{itemize}
+Changing the overall VGA frame resolution is also possible, but it requires the redefinition of several values in the VGA controller code aside from the configuration values given here, and a different VGA pixel clock (see above).
+
+\paragraph{Peripheral Configuration}
+Here, the SoC peripherals are configured.
+\begin{itemize}
+    \item \ttt{GPIO\_PORT\_COUNT}: Number of ports provided by the GPIO peripheral (32 pins per port). Must be between 1 and 16, inclusive. Default: 1 (32 pins).
+    \item \ttt{TIMER\_COUNT}: Number of timers provided by the timer peripheral. Must be between 1 and 16, inclusive. Default: 2.
+    \item \ttt{PWM\_MODULE\_COUNT}: Number of PWM modules provided by the PWM peripheral. Must be between 1 and 16, inclusive. Default: 6.
+\end{itemize}

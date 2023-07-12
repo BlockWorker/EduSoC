@@ -1,1 +1,264 @@
+\newpage
 \subsection{GPIO}\label{sec:per_gpio}
+The GPIO peripheral implements a general-purpose input/output interface for the system, allowing input and output control of up to 512 individual pins, as well as individual-pin input change notification interrupts for responding to external events.
+
+Externally, the GPIO peripheral provides a virtual bidirectional bus with separate input, output, and pin drive/direction signals. These are intended to be combined into a true bidirectional bus on the system level.
+
+Internally, the GPIO pins are divided into 32 pin (32 bit) ports, with a set of registers to control each port. The total number of ports is configurable between 1 port (32 pins total) and 16 ports (512 pins total) (see Section \ref{sec:config}), where the default port count is 1.
+
+In the following register descriptions, each type of register is only described once, even if it has multiple copies for the different ports. $i$ is used as a placeholder for the port index in these cases (where the first port is $i = 0$). In register addresses, $i$ should be replaced with the hexadecimal representation of the desired port index.
+
+This peripheral has the following registers:\\
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|l|}\hline
+        Address & Name & Reset Value \\\hline\hline
+        \ttt{0x1B001$i$00} & \ttt{GPIO\_PORT\_$i$} & \ttt{0x????????}\footnotemark[1] \\
+        \ttt{0x1B001$i$10} & \ttt{GPIO\_LATCH\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B001$i$20} & \ttt{GPIO\_DIR\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B001$i$30} & \ttt{GPIO\_CNR\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B001$i$40} & \ttt{GPIO\_CNF\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B001$i$50} & \ttt{GPIO\_CN\_STATE\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B0010F0} & \ttt{GPIO\_INT\_STATUS} & \ttt{0x00000000} \\\hline
+    \end{tabular}
+    \caption{GPIO Registers}
+    \label{tab:gpio_regs}
+\end{table}
+\footnotetext[1]{Since the read value of this register depends on external pin states, there is no defined reset value.}
+
+\newpage
+\subsubsection{\ttt{GPIO\_PORT\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$00}\hfill
+Reset value: \ttt{0x????????}\footnotemark[1]\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PORT\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PORT\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PORT\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} & \bd{R/W-x} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{PORT\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{PORT\_$i$}: GPIO port $i$ pin states.\\{\footnotesize
+    0 = Corresponding pin is in a low (0) state.\\
+    1 = Corresponding pin is in a high (1) state.}
+\end{itemize}
+If a pin is configured as an output, the corresponding pin in this register represents its currently driven value.\\
+Otherwise, the corresponding pin in this register represents its current input signal value.
+
+Writing to this register is equivalent to writing to the \ttt{GPIO\_LATCH\_$i$} register (see below).
+
+\subsubsection{\ttt{GPIO\_LATCH\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$10}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{LATCH\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{LATCH\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{LATCH\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{LATCH\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{LATCH\_$i$}: GPIO port $i$ output latch states.\\{\footnotesize
+    0 = Corresponding pin latch is in a low (0) state.\\
+    1 = Corresponding pin latch is in a high (1) state.}
+\end{itemize}
+\largepage
+The latch state of a pin, defined in this register, determines the logic level that will be driven on the pin if it is configured as an output pin. For input-configured pins, the latch value is ignored.
+
+\subsubsection{\ttt{GPIO\_DIR\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$20}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{DIR\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{DIR\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{DIR\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{DIR\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{DIR\_$i$}: GPIO port $i$ pin directions.\\{\footnotesize
+    0 = Corresponding pin is configured as an input pin.\\
+    1 = Corresponding pin is configured as an output pin.}
+\end{itemize}
+
+\subsubsection{\ttt{GPIO\_CNR\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$30}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNR\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNR\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNR\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNR\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{CNR\_$i$}: GPIO port $i$ rising edge change notification enable.\\{\footnotesize
+    0 = Corresponding pin will not generate change notification interrupts for rising edges.\\
+    1 = Corresponding pin will generate change notification interrupts for rising edges (0 $\rightarrow$ 1).}
+\end{itemize}
+
+\newpage
+\subsubsection{\ttt{GPIO\_CNF\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$40}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNF\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNF\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNF\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CNF\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{CNF\_$i$}: GPIO port $i$ falling edge change notification enable.\\{\footnotesize
+    0 = Corresponding pin will not generate change notification interrupts for falling edges.\\
+    1 = Corresponding pin will generate change notification interrupts for falling edges (1 $\rightarrow$ 0).}
+\end{itemize}
+
+\subsubsection{\ttt{GPIO\_CN\_STATE\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B001$i$50}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CN\_STATE\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CN\_STATE\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CN\_STATE\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{CN\_STATE\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\footnotesize C = Clearable} & \multicolumn{2}{l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{1}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{2}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{CN\_STATE\_$i$}: GPIO port $i$ edge change notification state.\\{\footnotesize
+    0 = Corresponding pin has not generated a change notification interrupt.\\
+    1 = Corresponding pin has generated a change notification interrupt (i.\,e. it has experienced a signal edge with enabled change notification).}
+\end{itemize}
+Bits in this register may be cleared (set to 0) using memory writes. Attempting to set bits to 1 using memory writes will have no effect.
+
+\subsubsection{\ttt{GPIO\_INT\_STATUS} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B0010F0}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{23:16} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{15:8} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{INT\_STATUS}[15:8]} \\\hline
+        \br{7:0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} & \bd{R/C-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{INT\_STATUS}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\footnotesize C = Clearable} & \multicolumn{2}{l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{1}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{2}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-16] Unimplemented: Read as 0.
+    \item[\footnotesize Bit 15-0] \ttt{INT\_STATUS}: GPIO ports interrupt status.\\{\footnotesize
+    0 = Port with corresponding index has not generated a change notification interrupt.\\
+    1 = Port with corresponding index has generated a change notification interrupt (i.\,e. one or more of its pins have experienced a signal edge with enabled change notification).}
+\end{itemize}
+The purpose of this register is to track which ports have generated change notification interrupts, to allow the software to efficiently find which pin is the latest interrupt source.
+
+Bits in this register may be cleared (set to 0) using memory writes. Attempting to set bits to 1 using memory writes will have no effect.

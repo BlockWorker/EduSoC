@@ -1,1 +1,125 @@
+\newpage
 \subsection{PWM}\label{sec:per_pwm}
+The PWM peripheral implements configurable pulse width modulated signal generation. It consists of up to 16 independent PWM modules (configurable, see Section \ref{sec:config}), where the default PWM module count is 6.
+
+Each PWM module depends on one timer from the timer peripheral (see Section \ref{sec:per_timer}). The PWM signal period is equal to the timer's period, and the timer must be enabled and running continuously for correct PWM signal generation. Multiple PWM modules can use the same timer.
+
+The modulation value (pulse width) of a PWM module is controlled by its value register, which determines the absolute width of each pulse (in clock cycles). For a value of 0, the signal is constantly low (0), for a value greater than or equal to the corresponding timer period, the signal is constantly high (1).
+
+The value register cannot be modified directly, instead, each module has a ``next value'' register which can be written to, and will be copied to the value register at the start of the following PWM/timer period.
+
+In the following register descriptions, each type of register is only described once, even if it has multiple copies for the different PWM modules. $i$ is used as a placeholder for the module index in these cases (where the first module is $i = 0$). In register addresses, $i$ should be replaced with the hexadecimal representation of the desired module index.
+
+This peripheral has the following registers:\\
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|l|}\hline
+        Address & Name & Reset Value \\\hline\hline
+        \ttt{0x1B003$i$00} & \ttt{PWM\_CONTROL\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B003$i$10} & \ttt{PWM\_VALUE\_$i$} & \ttt{0x00000000} \\
+        \ttt{0x1B003$i$20} & \ttt{PWM\_NEXT\_VALUE\_$i$} & \ttt{0x00000000} \\\hline
+    \end{tabular}
+    \caption{PWM Registers}
+    \label{tab:pwm_regs}
+\end{table}
+
+\newpage
+\subsubsection{\ttt{PWM\_CONTROL\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B003$i$00}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{23:16} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ub \\\hline
+        \br{15:8} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \ub & \ub & \ub & \ttt{ENABLE} \\\hline
+        \br{7:0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{U-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \ub & \ub & \ub & \ub & \multicolumn{4}{c|}{\ttt{TIMER\_ID}} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-9] Unimplemented: Read as 0.
+    \item[\footnotesize Bit 8] \ttt{ENABLE}: PWM module enable.\\{\footnotesize
+    0 = PWM module $i$ is disabled, its output is constantly low (0).\\
+    1 = PWM module $i$ is enabled and outputting a PWM signal.}
+    \item[\footnotesize Bit 7-4] Unimplemented: Read as 0.
+    \item[\footnotesize Bit 3-0] \ttt{TIMER\_ID}: Index of the timer module used for PWM module $i$. See Section \ref{sec:per_timer}.
+\end{itemize}
+
+\subsubsection{\ttt{PWM\_VALUE\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B003$i$10}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{VALUE\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{VALUE\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{VALUE\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} & \bd{R-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{VALUE\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{VALUE\_$i$}: PWM module $i$ pulse width in clock cycles.
+\end{itemize}
+For a value of 0, the PWM signal is constantly low (0), for a value greater than or equal to the corresponding timer period, the PWM signal is constantly high (1).
+
+This register is read-only, attempting to write to it will have no effect. For setting the value, the \ttt{PWM\_NEXT\_VALUE\_$i$} register should be used instead (see below).
+
+\newpage
+\subsubsection{\ttt{PWM\_NEXT\_VALUE\_$i$} Register}
+\vspace{-3mm}
+Address: \ttt{0x1B003$i$20}\hfill
+Reset value: \ttt{0x00000000}\\[-1mm]
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \renewcommand{\extrarowheight}{-1.5mm}
+    \begin{tabular}{|c||B|B|B|B|B|B|B|>{\arraybackslash}B|}\hline
+        \rule{0pt}{12pt}Bit Range & \multicolumn{8}{c|}{Bits (highest to lowest)} \\\hline\hline
+        \br{31:24} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{NEXT\_VALUE\_$i$}[31:24]} \\\hline
+        \br{23:16} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{NEXT\_VALUE\_$i$}[23:16]} \\\hline
+        \br{15:8} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{NEXT\_VALUE\_$i$}[15:8]} \\\hline
+        \br{7:0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} & \bd{R/W-0} \\\cline{2-9}
+        \rule{0pt}{12pt} & \multicolumn{8}{c|}{\ttt{NEXT\_VALUE\_$i$}[7:0]} \\\hline
+        \multicolumn{9}{c}{} \\\hline
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize\textbf{Legend:}} & \multicolumn{2}{l}{\footnotesize R = Readable} & \multicolumn{2}{l}{\footnotesize W = Writable} & \multicolumn{3}{l|}{\footnotesize U = Unimplemented, read as 0} \\
+        \multicolumn{2}{|l}{\rule{0pt}{10pt}\footnotesize -n = Initial Value} & \multicolumn{2}{l}{\footnotesize 1 = Set} & \multicolumn{2}{l}{\footnotesize 0 = Cleared} & \multicolumn{3}{l|}{\footnotesize x = Unknown} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \renewcommand{\extrarowheight}{0mm}
+\end{table}
+\vspace{-2mm}
+\begin{itemize}[leftmargin=18mm,labelsep=3mm,parsep=1.5mm]
+    \item[\footnotesize Bit 31-0] \ttt{NEXT\_VALUE\_$i$}: PWM module $i$ next pulse width in clock cycles.
+\end{itemize}
+The value in this register will be copied to \ttt{PWM\_VALUE\_$i$} at the start of each PWM/timer period.

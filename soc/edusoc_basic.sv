@@ -36,8 +36,8 @@ module edusoc_basic(
         output        BOARD_VGA_HSYNC,
         output        BOARD_VGA_VSYNC,
         output  [3:0] BOARD_VGA_R,
-        output  [3:0] BOARD_VGA_B,
         output  [3:0] BOARD_VGA_G,
+        output  [3:0] BOARD_VGA_B,
         input         BOARD_UART_RX,
         output        BOARD_UART_TX,
         

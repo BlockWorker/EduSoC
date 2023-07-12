@@ -50,30 +50,30 @@
 //Address space definitions
 `define ADDR_SLAVE_COUNT        7
 `define ADDR_BOOTROM_START      'h1A000000
-`define ADDR_BOOTROM_END        'h1A002000
+`define ADDR_BOOTROM_END        'h1A001FFF
 `define ADDR_SOCCON_START       'h1B000000
-`define ADDR_SOCCON_END         'h1B001000
+`define ADDR_SOCCON_END         'h1B000FFF
 `define ADDR_GPIO_START         'h1B001000
-`define ADDR_GPIO_END           'h1B002000
+`define ADDR_GPIO_END           'h1B001FFF
 `define ADDR_TIMERS_START       'h1B002000
-`define ADDR_TIMERS_END         'h1B003000
+`define ADDR_TIMERS_END         'h1B002FFF
 `define ADDR_PWM_START          'h1B003000
-`define ADDR_PWM_END            'h1B004000
+`define ADDR_PWM_END            'h1B003FFF
 `define ADDR_RAM_START          'h1C000000
-`define ADDR_RAM_END            'h1C010000
+`define ADDR_RAM_END            'h1C00FFFF
 `define ADDR_FRAMEBUFFER_START  'h1D000000
-`define ADDR_FRAMEBUFFER_END    'h1D040000
+`define ADDR_FRAMEBUFFER_END    'h1D03FFFF
 
 
 
 //**************************** CLOCK ****************************
 //Main clock - by default, configured for 25 MHz
-`define CLK_MAIN_DIVIDER        32
+`define CLK_MAIN_DIVIDER        32 //divider down from 800Mhz, 1-128
 //VGA clock - by default, configured for 25 MHz (requirement for 640x480 display)
-`define CLK_VGA_DIVIDER         32
+`define CLK_VGA_DIVIDER         32 //divider down from 800Mhz, 1-128
 //UART clock - by default, configured for 500 kBaud -> 8 MHz clock
 `define CLK_UART_DIVIDER_PLL    100 //divider down from 800Mhz, 1-128
-`define CLK_UART_DIVIDER_POST   1 //post-divider after above division, either 1 or a multiple of 2
+`define CLK_UART_DIVIDER_POST   1 //post-divider after PLL division, either 1 or a multiple of 2
 
 
 
@@ -90,21 +90,15 @@
 
 
 
-//**************************** GPIO ****************************
+//**************************** PERIPHERALS ****************************
 //GPIO port count - each port provides the hardware for 32 GPIO pins, maximum 16 ports
 `define GPIO_PORT_COUNT 1
 
-
-
-//**************************** PWM ****************************
-//PWM module count - each module can drive one GPIO pin in PWM mode, maximum 16 modules
-`define PWM_MODULE_COUNT 6
-
-
-
-//**************************** TIMERS ****************************
 //Timer count - how many independent timer modules there are, maximum 16 modules
 `define TIMER_COUNT 2
+
+//PWM module count - each module can drive one GPIO pin in PWM mode, maximum 16 modules
+`define PWM_MODULE_COUNT 6
 
 
 
