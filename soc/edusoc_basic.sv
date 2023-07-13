@@ -107,6 +107,8 @@ module edusoc_basic(
     assign BOARD_LED_RGB1 = pwm[5:3] | gpio_out[14:12];
     assign gpio_in[19:16] = BOARD_BUTTON;
     assign gpio_in[23:20] = BOARD_SWITCH;
+    assign gpio_in[15:0] = 16'b0;
+    assign gpio_in[31:24] = 8'b0;
     
     //instruction bus fanout - read-only bus, so write-related signals tied to zero
     assign instr_bus.addr = INSTR_ADDR;

@@ -1,6 +1,6 @@
 # EduSoC bootloader for UART programming
 
-# Initialize SoC for Arty-S7 board (edusoc-basic configuration)
+# Initialize SoC for Arty S7 board (edusoc-basic configuration)
 lui x1, 0x1B001			# gpio base address
 li x2, 0x0000770F		# gpio directions required (LEDs output, others input)
 sw x2, 0x020(x1)		# write gpio directions
@@ -11,10 +11,10 @@ sw x2, 0x040(x1)		# enable falling edge notifications
 # Reset: Check for control flag indicating successful UART programming
 lui x1, 0x1B000			# controller base address
 lw x2, 0(x1)			# read control register
-srli x2, x2, 16			# shift to extract control flags
-addi x3, x0, 1			# expected control flag value
+lui x3, 0x00010			# expected control flag (flag 0)
+and x2, x2, x3			# only care about flag 0
 bne x2, x3, idle		# if control flags not as expected: not programmed yet, go to idle loop
-lui x1, 0x1C000			# RAM code address
+li x1, 0x1C000080	  	# RAM code address
 jr x1					# control flags set as expected: programmed -> jump to RAM code
 
 # RAM not programmed: Show processor working with some idle LED flashing
