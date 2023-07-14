@@ -22,11 +22,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module MUX_2x1_32(
+module MUX_2x1_32 (
     input [31:0] I0,
     input [31:0] I1,
     input S,
     output [31:0] Y
-    );
-    assign Y= (S==1'b0) ? I0 : I1;
+);
+  assign Y = (S == 1'b0) ? I0 : I1;
 endmodule
