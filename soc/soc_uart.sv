@@ -23,19 +23,19 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-typedef enum {
-  WAITING,
-  WAITSTART,
-  RECEIVE[1: 8],
-  WAITSTOP,
-  BREAK
+typedef enum logic [3:0] {
+  WAITING = 0,
+  WAITSTART = 1,
+  RECEIVE[1: 8] = 2,
+  WAITSTOP = 10,
+  BREAK = 11
 } rx_state_t;
 
-typedef enum {
-  IDLE,
-  START,
-  SEND[1: 8],
-  STOP
+typedef enum logic [3:0] {
+  IDLE = 0,
+  START = 1,
+  SEND[1: 8] = 2,
+  STOP = 10
 } tx_state_t;
 
 module soc_uart (
