@@ -21,23 +21,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pc(input [31:0] D,
-          input MODE,
-          input ENABLE,
-          input RES,
-          input CLK,
-          output [31:0] PC_OUT);
+module pc (
+    input [31:0] D,
+    input MODE,
+    input ENABLE,
+    input RES,
+    input CLK,
+    output [31:0] PC_OUT
+);
 
-    reg [31:0] counter;
+  reg [31:0] counter;
 
-    assign PC_OUT = counter; //output always matches counter
+  assign PC_OUT = counter;  //output always matches counter
 
-    always @(posedge CLK) begin
-        if (RES) counter <= 32'h1A000000; //reset counter to boot ROM address
-        else if (ENABLE) begin //do nothing unless enabled
-            if (MODE) counter <= D; //jump
-            else counter <= counter + 32'd4; //increment
-        end
+  always @(posedge CLK) begin
+    if (RES) counter <= 32'h1A000000;  //reset counter to boot ROM address
+    else if (ENABLE) begin  //do nothing unless enabled
+      if (MODE) counter <= D;  //jump
+      else counter <= counter + 32'd4;  //increment
     end
+  end
 
 endmodule

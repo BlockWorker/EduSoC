@@ -2,23 +2,23 @@
 
 `define ISR_BASE_ADDR 32'h1C00_0000
 
-`define ALU_ADD  7'b??0000?
-`define ALU_SUB  7'b1000001
-`define ALU_AND  7'b??1110?
-`define ALU_OR   7'b??1100?
-`define ALU_XOR  7'b??1000?
-`define ALU_SLL  7'b000010?
-`define ALU_SRA  7'b101010?
-`define ALU_SRL  7'b001010?
-`define ALU_SLT  7'b??0100?
+`define ALU_ADD 7'b??0000?
+`define ALU_SUB 7'b1000001
+`define ALU_AND 7'b??1110?
+`define ALU_OR 7'b??1100?
+`define ALU_XOR 7'b??1000?
+`define ALU_SLL 7'b000010?
+`define ALU_SRA 7'b101010?
+`define ALU_SRL 7'b001010?
+`define ALU_SLT 7'b??0100?
 `define ALU_SLTU 7'b??0110?
-`define ALU_EQ   7'b??00011
-`define ALU_NE   7'b??00111
-`define ALU_LT   7'b??10011
-`define ALU_GE   7'b??10111
-`define ALU_LTU  7'b??11011
-`define ALU_GEU  7'b??11111
-`define ALU_MUL  7'b0100001
+`define ALU_EQ 7'b??00011
+`define ALU_NE 7'b??00111
+`define ALU_LT 7'b??10011
+`define ALU_GE 7'b??10111
+`define ALU_LTU 7'b??11011
+`define ALU_GEU 7'b??11111
+`define ALU_MUL 7'b0100001
 
 `define IMM_ZERO 3'd0
 `define IMM_I 3'd1
