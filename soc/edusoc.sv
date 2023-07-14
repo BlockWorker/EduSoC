@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 20.06.2023 13:02:01
 // Design Name: 
 // Module Name: edusoc

@@ -2,6 +2,8 @@
 \subsection{PWM}\label{sec:per_pwm}
 The PWM peripheral implements configurable pulse width modulated signal generation. It consists of up to 16 independent PWM modules (configurable, see Section \ref{sec:config}), where the default PWM module count is 6.
 
+In the \ttt{edusoc\_basic} configuration, the 6 PWM modules are connected to the two RGB LEDs on the Arty S7 board, as a way to generate any desired LED colors. However, the corresponding timers and PWM modules are not automatically configured by the provided bootloader. See Appendix \ref{sec:basic} for more information.
+
 Each PWM module depends on one timer from the timer peripheral (see Section \ref{sec:per_timer}). The PWM signal period is equal to the timer's period, and the timer must be enabled and running continuously for correct PWM signal generation. Multiple PWM modules can use the same timer.
 
 The modulation value (pulse width) of a PWM module is controlled by its value register, which determines the absolute width of each pulse (in clock cycles). For a value of 0, the signal is constantly low (0), for a value greater than or equal to the corresponding timer period, the signal is constantly high (1).

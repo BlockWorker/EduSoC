@@ -1,4 +1,27 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: University of Stuttgart, ITI
+// Engineer: 
+// 
+// License: CERN-OHL-W-2.0
+// 
+// Create Date:
+// Design Name: 
+// Module Name: MUX_4x1_32
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module MUX_4x1_32(
     input [31:0] I0,
     input [31:0] I1,

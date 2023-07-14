@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: University of Stuttgart, ITI
+// Engineer: Alexander Kharitonov
+// 
+// License: CERN-OHL-W-2.0
 // 
 // Create Date: 24.06.2023 23:34:21
 // Design Name: 

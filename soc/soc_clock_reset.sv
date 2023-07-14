@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 20.06.2023 14:06:03
 // Design Name: 
 // Module Name: soc_clock_reset

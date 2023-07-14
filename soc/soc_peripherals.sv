@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 03.07.2023 18:18:51
 // Design Name: 
 // Module Name: soc_peripherals

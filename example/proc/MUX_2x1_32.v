@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
+// Company: University of Stuttgart, ITI
 // Engineer: 
+// 
+// License: CERN-OHL-W-2.0
 // 
 // Create Date: 24.09.2018 10:18:41
 // Design Name: 

@@ -4,6 +4,8 @@ The GPIO peripheral implements a general-purpose input/output interface for the 
 
 Externally, the GPIO peripheral provides a virtual bidirectional bus with separate input, output, and pin drive/direction signals. These are intended to be combined into a true bidirectional bus on the system level.
 
+In the \ttt{edusoc\_basic} configuration, there is no bidirectional GPIO bus, but individual pins are assigned for use with the Arty S7 LEDs, buttons, and switches, with pin directions and change notifications configured accordingly by the provided bootloader. See Appendix \ref{sec:basic} for more information.
+
 Internally, the GPIO pins are divided into 32 pin (32 bit) ports, with a set of registers to control each port. The total number of ports is configurable between 1 port (32 pins total) and 16 ports (512 pins total) (see Section \ref{sec:config}), where the default port count is 1.
 
 In the following register descriptions, each type of register is only described once, even if it has multiple copies for the different ports. $i$ is used as a placeholder for the port index in these cases (where the first port is $i = 0$). In register addresses, $i$ should be replaced with the hexadecimal representation of the desired port index.

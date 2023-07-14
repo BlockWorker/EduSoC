@@ -31,10 +31,10 @@ The majority of these signals are direct equivalents to generic EduSoC interface
     \item \ttt{BOARD\_CLK} and \ttt{BOARD\_RESN} correspond to \ttt{ext\_clk} and \ttt{ext\_resn}, respectively.
     \item \ttt{BOARD\_VGA\_*} and \ttt{BOARD\_UART\_*} correspond to \ttt{vga\_*} and \ttt{uart\_*}, respectively.
     \item \ttt{CPU\_CLK} and \ttt{CPU\_RES} correspond to \ttt{core\_clk} and \ttt{core\_res}, respectively.
-    \item \ttt{INSTR\_*} correspond to the individual signals of \ttt{instr\_bus}. As the instruction bus is intended to be a read-only bus, only the corresponding signals are available. Write-related signals are tied to constant 0.
-    \item \ttt{DATA\_*} correspond to the individual signals of \ttt{data\_bus}.
-    \item \ttt{IRQ*} correspond to the individual signals of \ttt{int\_bus}.
-    \item Other signals from the SoC interface are not available in this basic interface (\ttt{control\_flags}, \ttt{core\_int\_triggers}, \ttt{gpio\_*} and \ttt{pwm} aside from exceptions below). If they are needed, please use the generic \ttt{edusoc} module instead.
+    \item \ttt{INSTR\_*} correspond to the individual signals of \ttt{instr\_bus} (see Section \ref{sec:membus}). As the instruction bus is intended to be a read-only bus, only the corresponding signals are available. Write-related signals are tied to constant 0.
+    \item \ttt{DATA\_*} correspond to the individual signals of \ttt{data\_bus} (see Section \ref{sec:membus}).
+    \item \ttt{IRQ*} correspond to the individual signals of \ttt{int\_bus} (see Section \ref{sec:intbus}).
+    \item Other signals from the SoC interface are not available in this basic interface (\ttt{control\_flags}, \ttt{core\_int\_triggers}, \ttt{gpio\_*} and \ttt{pwm} aside from exceptions below). If they are needed, please use the generic \ttt{edusoc} module instead. Note that the control flags can still be read using the memory bus in the \ttt{edusoc\_basic} configuration, they are just not available as a hardware signal.
 \end{itemize}
 \newpage
 The remaining signals of \ttt{edusoc\_basic} are intended to be mapped to the corresponding devices available on the Arty S7 board (LEDs, RGB LEDs, buttons, switches). They are internally connected to the GPIO and/or PWM ports:

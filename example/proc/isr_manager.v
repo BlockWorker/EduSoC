@@ -2,6 +2,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date:
 // Design Name: 
 // Module Name: isr_manager

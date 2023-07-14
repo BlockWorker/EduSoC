@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 05.07.2023 12:15:38
 // Design Name: 
 // Module Name: soc_vga

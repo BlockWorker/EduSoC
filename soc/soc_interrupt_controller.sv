@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 06/28/2023 04:22:09 PM
 // Design Name: 
 // Module Name: soc_interrupt_controller

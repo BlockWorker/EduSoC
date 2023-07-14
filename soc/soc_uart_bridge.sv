@@ -3,6 +3,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 21.06.2023 15:51:13
 // Design Name: 
 // Module Name: soc_uart_bridge

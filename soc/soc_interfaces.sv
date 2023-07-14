@@ -2,6 +2,8 @@
 // Company: University of Stuttgart, ITI
 // Engineer: Alexander Kharitonov
 // 
+// License: CERN-OHL-W-2.0
+// 
 // Create Date: 24.06.2023 20:11:02
 // Design Name: 
 // Module Name: soc_interfaces
