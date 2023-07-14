@@ -347,15 +347,15 @@ set file "soc/soc_video_controller.sv"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "EduSoC/bootloader.mem"
+set file "bootloader.mem"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Memory File" -objects $file_obj
 
-set file "EduSoC/sim_bootrom.mem"
+set file "sim_bootrom.mem"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Memory File" -objects $file_obj
 
-set file "EduSoC/sim_ram.mem"
+set file "sim_ram.mem"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Memory File" -objects $file_obj
 
