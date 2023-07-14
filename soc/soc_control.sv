@@ -46,6 +46,7 @@ module soc_control #(
     reg [31:0] int_enables;
     wire [31:0] asserted_ints;
     reg [31:0] control_register;
+    wire [31:0] clock_frequency = 800_000_000 / `CLK_MAIN_DIVIDER;
     
     wire [31:0] addr;
     wire [7:0] register_addr = addr[11:4]; //local register address
@@ -96,6 +97,7 @@ module soc_control #(
                 `REG_SOCCTL_CONTROL: register_value = control_register;
                 `REG_SOCCTL_INT_EN: register_value = int_enables;
                 `REG_SOCCTL_INT_FLAGS: register_value = asserted_ints;
+                `REG_SOCCTL_CLK_FREQ: register_value = clock_frequency;
             endcase
         end
     end

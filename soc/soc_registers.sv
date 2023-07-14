@@ -46,6 +46,7 @@
 `define REG_SOCCTL_CONTROL      8'h00 //control register - core halt, core reset, soc reset, interrupt global en, control flags
 `define REG_SOCCTL_INT_EN       8'h01 //enabled interrupts
 `define REG_SOCCTL_INT_FLAGS    8'h02 //asserted interrupts
+`define REG_SOCCTL_CLK_FREQ     8'h03 //clock frequency
 
 
 
