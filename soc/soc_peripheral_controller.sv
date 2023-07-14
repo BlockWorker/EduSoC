@@ -22,9 +22,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`include "soc_defines.sv"
-
-
 module soc_peripheral_controller #(
         parameter LATENCY = 1 //additional latency of peripheral interface (on top of inherent 1-cycle latency)
     ) (

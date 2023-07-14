@@ -22,6 +22,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+import globalconf::*;
 
 module edusoc_basic(
         /* BOARD SIGNALS */
@@ -75,9 +76,9 @@ module edusoc_basic(
     SoC_InterruptBus int_bus();
     
     //GPIO and PWM wires
-    wire [(32*`GPIO_PORT_COUNT)-1:0] gpio_in;
-    wire [(32*`GPIO_PORT_COUNT)-1:0] gpio_out;
-    wire [`PWM_MODULE_COUNT-1:0] pwm;
+    wire [(32*GPIO_PORT_COUNT)-1:0] gpio_in;
+    wire [(32*GPIO_PORT_COUNT)-1:0] gpio_out;
+    wire [PWM_MODULE_COUNT-1:0] pwm;
     
     //actual SoC component
     edusoc soc (

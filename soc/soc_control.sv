@@ -22,8 +22,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`include "soc_defines.sv"
+import registers::*;
 
+  typedef enum logic [7:0] {
+    CONTROL = 0,
+    INT_EN = 1,
+    INT_FLAGS = 2
+  } socctl_t;
 
 module soc_control #(
         parameter BUS_LATENCY = 1
@@ -48,10 +53,13 @@ module soc_control #(
     reg [31:0] control_register;
     
     wire [31:0] addr;
-    wire [7:0] register_addr = addr[11:4]; //local register address
-    wire [1:0] register_type = addr[3:2]; //register access type
+    socctl_t register_addr; //local register address
+    reg_access_t register_type; //register access type
     reg [31:0] register_value;
     wire [31:0] register_write;
+    
+    assign register_addr = socctl_t'(addr[11:4]);
+    assign register_type = reg_access_t'(addr[3:2]);
     wire write_enabled;
     
     //SoC interrupt controller
@@ -91,11 +99,12 @@ module soc_control #(
     always @(*) begin
         register_value = 32'b0;
         
-        if (register_type == `REG_TYPE_MAIN) begin
+        if (register_type == MAIN) begin
             case (register_addr)
-                `REG_SOCCTL_CONTROL: register_value = control_register;
-                `REG_SOCCTL_INT_EN: register_value = int_enables;
-                `REG_SOCCTL_INT_FLAGS: register_value = asserted_ints;
+                CONTROL: register_value = control_register;
+                INT_EN: register_value = int_enables;
+                INT_FLAGS: register_value = asserted_ints;
+                default: /* Do nothing in case of an invalid address. */ ;
             endcase
         end
     end
@@ -109,16 +118,16 @@ module soc_control #(
             control_register[15:0] <= 16'h8; //interrupts globally enabled at reset
         end else if (write_enabled) begin
             case (register_addr)
-                `REG_SOCCTL_CONTROL: begin //write to control register, ignore reserved bits
-                    control_register <= `REG_WRITEVAL(control_register, register_write, register_type) & 32'hFFFF000F;
+                CONTROL: begin //write to control register, ignore reserved bits
+                    control_register <= writeval(control_register, register_write, register_type) & 32'hFFFF000F;
                 end
-                `REG_SOCCTL_INT_EN: begin //write to interrupt enable register
-                    int_enables <= `REG_WRITEVAL(int_enables, register_write, register_type);
+                INT_EN: begin //write to interrupt enable register
+                    int_enables <= writeval(int_enables, register_write, register_type);
                 end
-                `REG_SOCCTL_INT_FLAGS: begin //write to interrupt flags register: can only be cleared
-                    if (register_type == `REG_TYPE_MAIN) int_clears <= ~register_write;
-                    else if (register_type == `REG_TYPE_CLR || register_type == `REG_TYPE_INV) int_clears <= register_write;
+                INT_FLAGS: begin //write to interrupt flags register: can only be cleared
+                    int_clears <= clearonly(int_clears, register_write, register_type);
                 end
+                default: /* Do nothing in case of an invalid address. */ ;
             endcase
         end
     end

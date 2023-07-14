@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`include "soc_defines.sv"
+`define CLK_MAIN_DIVIDER 32
 
 
 module csrset #(parameter CORE_ID = 32'd0) (
