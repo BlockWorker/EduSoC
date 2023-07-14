@@ -22,19 +22,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module REG_DR_32(
+module REG_DR_32 (
     input [31:0] D,
     output [31:0] Q,
     input CLK,
     input RES
-    );
-    reg [31:0] Q_tmp=32'd0;
-    assign Q=Q_tmp;
-    always @(posedge CLK)
-    begin
-      if(RES==1'b1)
-        Q_tmp<=32'd0;
-      else
-        Q_tmp<=D;      
-    end
+);
+  reg [31:0] Q_tmp = 32'd0;
+  assign Q = Q_tmp;
+  always @(posedge CLK) begin
+    if (RES == 1'b1) Q_tmp <= 32'd0;
+    else Q_tmp <= D;
+  end
 endmodule

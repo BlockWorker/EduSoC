@@ -24,15 +24,15 @@
 
 import registers::*;
 
-  typedef enum logic [3:0] {
-    PORT = 0,
-    LATCH = 1,
-    DIR = 2,
-    CNR = 3,
-    CNF = 4,
-    CN_STATE = 5,
-    INT_STATUS = 'hF
-  } gpio_conf_t;
+typedef enum logic [3:0] {
+  PORT = 0,
+  LATCH = 1,
+  DIR = 2,
+  CNR = 3,
+  CNF = 4,
+  CN_STATE = 5,
+  INT_STATUS = 'hF
+} gpio_conf_t;
 
 module soc_gpio #(
     parameter BUS_LATENCY = 1,
@@ -193,7 +193,8 @@ module soc_gpio #(
                   writeval(port_cn_falling[register_index], register_write, register_type);
             end
             CN_STATE: begin
-              port_cn_states[register_index] <= clearonly(port_cn_states[register_index], register_write, register_type);
+              port_cn_states[register_index] <=
+                  clearonly(port_cn_states[register_index], register_write, register_type);
             end
             default:  /* Do nothing in case of invalid address. */;
           endcase

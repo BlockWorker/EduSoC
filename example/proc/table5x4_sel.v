@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module table5x4_sel(
+module table5x4_sel (
     input [1:0] col,
     input [4:0] row,
     input [31:0] in_0x0,
@@ -46,16 +46,20 @@ module table5x4_sel(
     input [31:0] in_4x2,
     input [31:0] in_4x3,
     output reg [31:0] selected
-    );
-        
-always@(col, row, in_0x0,in_0x1,in_0x2,in_0x3, in_1x0,in_1x1,in_1x2,in_1x3, in_2x0,in_2x1,in_2x2,in_2x3,in_3x3,in_3x0,in_3x1,in_3x2,in_3x3,in_4x0,in_4x1,in_4x2,in_4x3)
+);
+
+  always@(col, row, in_0x0,in_0x1,in_0x2,in_0x3, in_1x0,in_1x1,in_1x2,in_1x3, in_2x0,in_2x1,in_2x2,in_2x3,in_3x3,in_3x0,in_3x1,in_3x2,in_3x3,in_4x0,in_4x1,in_4x2,in_4x3)
 begin
-    selected=32'hDEADBEEF;
-    case(col)
-        2'b00 : selected=row[0] ? in_0x0 : row[1] ? in_1x0 : row[2] ? in_2x0 : row[3] ? in_3x0 :row[4] ? in_4x0 : 32'hDEADBEEF;
-        2'b01 : selected=row[0] ? in_0x1 : row[1] ? in_1x1 : row[2] ? in_2x1 : row[3] ? in_3x1 :row[4] ? in_4x1 : 32'hDEADBEEF;
-        2'b10 : selected=row[0] ? in_0x2 : row[1] ? in_1x2 : row[2] ? in_2x2 : row[3] ? in_3x2 :row[4] ? in_4x2 : 32'hDEADBEEF;
-        2'b11 : selected=row[0] ? in_0x3 : row[1] ? in_1x3 : row[2] ? in_2x3 : row[3] ? in_3x3 :row[4] ? in_4x3 : 32'hDEADBEEF;
+    selected = 32'hDEADBEEF;
+    case (col)
+      2'b00:
+      selected=row[0] ? in_0x0 : row[1] ? in_1x0 : row[2] ? in_2x0 : row[3] ? in_3x0 :row[4] ? in_4x0 : 32'hDEADBEEF;
+      2'b01:
+      selected=row[0] ? in_0x1 : row[1] ? in_1x1 : row[2] ? in_2x1 : row[3] ? in_3x1 :row[4] ? in_4x1 : 32'hDEADBEEF;
+      2'b10:
+      selected=row[0] ? in_0x2 : row[1] ? in_1x2 : row[2] ? in_2x2 : row[3] ? in_3x2 :row[4] ? in_4x2 : 32'hDEADBEEF;
+      2'b11:
+      selected=row[0] ? in_0x3 : row[1] ? in_1x3 : row[2] ? in_2x3 : row[3] ? in_3x3 :row[4] ? in_4x3 : 32'hDEADBEEF;
     endcase
-end
+  end
 endmodule

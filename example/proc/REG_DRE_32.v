@@ -22,22 +22,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module REG_DRE_32(
+module REG_DRE_32 (
     input [31:0] D,
     output [31:0] Q,
     input CLK,
     input RES,
     input ENABLE
-    );
-    reg [31:0] Q_tmp=32'd0;
-    assign Q=Q_tmp;
-    always @(posedge CLK)
-    begin
-      if(RES==1'b1)
-        Q_tmp<=32'd0;        
-      else if(ENABLE==1'b1)
-        Q_tmp<=D;
-      else
-        Q_tmp<=Q_tmp;
-    end
+);
+  reg [31:0] Q_tmp = 32'd0;
+  assign Q = Q_tmp;
+  always @(posedge CLK) begin
+    if (RES == 1'b1) Q_tmp <= 32'd0;
+    else if (ENABLE == 1'b1) Q_tmp <= D;
+    else Q_tmp <= Q_tmp;
+  end
 endmodule
