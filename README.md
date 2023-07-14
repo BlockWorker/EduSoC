@@ -3,9 +3,11 @@ Minimalistic SoC framework for the Digilent Arty S7 FPGA board, intended for edu
 
 Developed for the Institute of Computer Architecture and Computer Engineering at the University of Stuttgart.
 
-All SoC code is in the "soc" folder (aside from the IP configuration file in the "edusoc_system.srcs" folder).
-Also provided are tools for programming the SoC over UART, test benches, and an example EduSoC project for Vivado 2022.2.
+A datasheet is available in the "doc" folder.
 
-In the "example" folder, a simple example RISC-V core is provided, along with a Vivado project showing its use, and some example programs for it.
+All SoC code is in the "soc" folder (aside from the IP configuration file in the "edusoc_system.srcs" folder).
+Also provided are tools for programming the SoC over UART, testbenches, and a Vivado project creation script showing an example SoC configuration without a core.
+
+In the "example" folder, a simple example RISC-V core is provided, along with a Vivado project creation script for showing its use, and some example programs for it.
 
 Licensed under CERN-OHL-W-2.0.

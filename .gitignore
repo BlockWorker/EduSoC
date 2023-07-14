@@ -68,6 +68,7 @@ xvlog.*
 *.debug
 *.ip_user_files
 *.gen
+*.xpr
 
 ## checkpoint files
 *.dcp
