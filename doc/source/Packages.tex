@@ -1,0 +1,40 @@
+\usepackage[utf8]{inputenc}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[british]{babel}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage[pdftex,hyperref,dvipsnames,table]{xcolor}
+\usepackage{listings}
+\usepackage[a4paper,lmargin={2cm},rmargin={2cm},tmargin={3.5cm},bmargin = {2.5cm},headheight = {4cm}]{geometry}
+\usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{stmaryrd}
+\usepackage[lined,algonl,boxed]{algorithm2e}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage[inline]{enumitem}
+\usepackage[headsepline]{scrlayer-scrpage} 
+\pagestyle{scrheadings} 
+\usetikzlibrary{automata,positioning}
+\usepackage{pgfplots}
+\usepackage{amsfonts}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{tcolorbox}
+\usepackage{multirow}
+
+%%%
+% Enables inclusion of SVG graphics - 1:1 approach
+% This is NOT the approach of http://www.ctan.org/tex-archive/info/svg-inkscape,
+% which allows text in SVG to be typeset using LaTeX
+% We just include the SVG as is
+\usepackage{epstopdf}
+\epstopdfDeclareGraphicsRule{.svg}{pdf}{.pdf}{%
+  inkscape -z -D --file=#1 --export-pdf=\OutputFile
+}
+%
+%%%
+

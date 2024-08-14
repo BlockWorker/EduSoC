@@ -1,0 +1,50 @@
+\documentclass[12pt]{scrartcl}
+
+\input{Packages.tex}
+
+\ihead{University of Stuttgart, ITI}
+%\chead{\today}
+\ohead{EduSoC v1.0}
+
+\title{EduSoC v1.0}
+\subtitle{Minimalistic RISC-V-oriented SoC for educational purposes}
+\author{Alexander Kharitonov\\University of Stuttgart, ITI}
+
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\angles}[1]{\left\langle#1\right\rangle}
+\newcommand{\squares}[1]{\left[#1\right]}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{.7em}
+\setlength{\intextsep}{0em}
+
+\newcommand{\largepage}{\enlargethispage{\baselineskip}}
+\newcommand{\smallpage}{\enlargethispage{-\baselineskip}}
+
+% Table helpers for register bit tables
+\newcolumntype{B}{>{\centering}m{14mm}} % "Bit" column type, fixed width
+\newcommand{\ub}{\cellcolor{gray!25}\textemdash} % "Unused bit" cell
+\newcommand{\bd}[1]{\scriptsize#1\vspace{-2.3mm}} % Bit details (read/write ability, reset value, ...)
+\newcommand{\br}[1]{\multirow{2}{*}{#1\vspace{-2.3mm}}} % Bit range cell (first column)
+
+\begin{document}
+
+\input{sections/general}
+
+\input{sections/interfaces}
+
+\input{sections/modules}
+
+\input{sections/peripherals}
+
+\input{sections/config}
+
+\input{sections/appendix}
+
+
+\end{document}
